@@ -1,0 +1,21 @@
+ai-analyzer/
+  docker-compose.yml
+  backend/
+    Dockerfile
+    requirements.txt
+    app/
+      main.py
+      db.py
+      models.py
+      schemas.py
+      ai.py
+  frontend/
+    Dockerfile
+    package.json
+    vite.config.js
+    index.html
+    src/
+      main.jsx
+      App.jsx
+      api.js
+      styles.css
