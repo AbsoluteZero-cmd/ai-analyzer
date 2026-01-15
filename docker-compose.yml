@@ -27,7 +27,7 @@ services:
     environment:
       VITE_API_URL: http://localhost:8000
     volumes:
-      - C:\Users\aidana\Documents\test-ai\frontend:/app:ro
+      - C:\Users\aidana\Documents\test-ai\frontend:/app
       - /app/node_modules
     ports:
       - '5173:5173'

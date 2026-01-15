@@ -9,4 +9,30 @@ const getAnalyses = async () => {
 	}
 };
 
-export default getAnalyses;
+const getAnalysesDetail = async (id: number) => {
+	try {
+		const res = await fetch(`${API_URL}/api/analyses/${id}`);
+		return await res.json();
+	} catch (error) {
+		throw new Error('');
+	}
+};
+
+const postAnalysis = async (formData: FormData) => {
+	try {
+		console.log(formData);
+
+		const res = await fetch(`${API_URL}/api/analyze`, {
+			method: 'POST',
+			body: formData,
+		});
+
+		const data = await res.json();
+		console.log(data);
+		console.log('Finished uploading');
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export { getAnalyses, postAnalysis, getAnalysesDetail };
