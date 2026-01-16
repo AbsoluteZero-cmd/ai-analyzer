@@ -93,3 +93,10 @@ def get_analysis(analysis_id: int, db: Session = Depends(get_db)):
     if not row:
         raise HTTPException(status_code=404, detail="Not found")
     return row
+
+@app.delete("/api/delete/{analysis_id}")
+def delete_analysis(analysis_id: int, db: Session = Depends(get_db)):
+    print(analysis_id)
+    row = db.query(Analysis).filter(Analysis.id == analysis_id).delete()
+    db.commit()
+    return {'status': 'ok'}

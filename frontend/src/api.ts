@@ -18,6 +18,18 @@ const getAnalysesDetail = async (id: number) => {
 	}
 };
 
+const deleteAnalysis = async (id: number) => {
+	try {
+		const res = await fetch(`${API_URL}/api/delete/${id}`, {
+			method: 'DELETE',
+		});
+		console.log(res);
+		return await res.json();
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const postAnalysis = async (formData: FormData) => {
 	try {
 		console.log(formData);
@@ -35,4 +47,4 @@ const postAnalysis = async (formData: FormData) => {
 	}
 };
 
-export { getAnalyses, postAnalysis, getAnalysesDetail };
+export { getAnalyses, postAnalysis, getAnalysesDetail, deleteAnalysis };
