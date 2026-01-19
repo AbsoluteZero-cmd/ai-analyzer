@@ -9,3 +9,10 @@ pydantic-settings==2.6.1
 torch==2.5.1
 transformers==4.46.3
 accelerate==1.1.1
+
+python-jose
+passlib
+bcrypt===4.3.0
+python-dotenv
+python-multipart
+pyjwt

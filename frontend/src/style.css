@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+
+body {
+	background: url('https://img.freepik.com/premium-photo/abstract-wallpaper-background-colorful-balls-d-rendering_93675-124371.jpg')
+		no-repeat cover;
+}

@@ -19,6 +19,8 @@ services:
       CORS_ORIGINS: http://localhost:5173
     ports:
       - '8000:8000'
+    volumes:
+      - C:\Users\aidana\Documents\test-ai\backend:/app
     depends_on:
       - db
 

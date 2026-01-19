@@ -1,19 +1,9 @@
 import { useState, useEffect } from 'react';
-import {
-	BrowserRouter,
-	Routes,
-	Route,
-	Link,
-	useParams,
-} from 'react-router-dom';
-import {
-	getAnalyses,
-	postAnalysis,
-	getAnalysesDetail,
-	deleteAnalysis,
-} from './api';
-import Navbar from './components/Navbar';
+import { Routes, Route, Link, useParams } from 'react-router-dom';
+import { postAnalysis, getAnalysesDetail, deleteAnalysis } from './api';
 import AnalyzeForm from './components/AnalyzeForm';
+import Dashboard from './pages/Dashboard';
+import Layout from './pages/Layout';
 
 interface Analysis {
 	id: number;
@@ -64,20 +54,9 @@ function blobToFile(theBlob, fileName) {
 
 const Home = () => {
 	const [loading, setLoading] = useState<boolean>(false);
-	const [data, setData] = useState([]);
 
 	const [formText, setFormText] = useState<string>('');
 	const [file, setFile] = useState<File | null>(null);
-
-	useEffect(() => {
-		const fetchData = async () => {
-			const res = await getAnalyses();
-			setData(res);
-			console.log(res);
-		};
-
-		fetchData();
-	}, [loading]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -134,22 +113,20 @@ const Home = () => {
 		// console.log(text);
 	};
 
-	const handleDelete = async (id: number) => {
-		const res = await deleteAnalysis(id);
-		console.log(res);
-	};
-
 	const handleTextChange = (text: string) => {
 		setFormText(text);
 		console.log(text);
 	};
 
-	if (loading) return <p>Loading...</p>;
+	if (loading)
+		return (
+			<div className='flex flex-col justify-center items-center h-screen'>
+				<div class='w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin'></div>
+			</div>
+		);
 
 	return (
-		<div className='container mx-auto'>
-			<Navbar />
-
+		<div>
 			<div className='flex justify-center mt-12'>
 				<div className='inline-flex justify-baseline text-sm text-yellow-500 text-center px-4 py-1 bg-yellow-300/10 rounded-2xl shadow-md'>
 					<svg
@@ -180,34 +157,19 @@ const Home = () => {
 				handleTextChange={handleTextChange}
 				handleSubmit={handleSubmit}
 			/>
-
-			{/* <h1>Analyses List</h1>
-			<form method='post' onSubmit={(e) => handleSubmit(e)}>
-				<input type='file' name='fileInput' id='file' />
-				<button type='submit'>Submit</button>
-			</form>
-			<ul>
-				{data.map((item) => (
-					<li key={item.id}>
-						<Link to={`/analyses/${item.id}`}>{item.filename}</Link>
-						<button onClick={() => handleDelete(item.id)}>
-							Delete analysis
-						</button>
-					</li>
-				))}
-			</ul> */}
 		</div>
 	);
 };
 
 function App() {
 	return (
-		<BrowserRouter>
+		<Layout>
 			<Routes>
-				<Route path='/' element={<Home />} />
+				<Route path='/' index element={<Home />} />
+				<Route path='/dashboard' element={<Dashboard />} />
 				<Route path='/analyses/:analysisId' element={<Detail />} />
 			</Routes>
-		</BrowserRouter>
+		</Layout>
 	);
 }
 
