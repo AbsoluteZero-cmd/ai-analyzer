@@ -5,6 +5,7 @@ import AnalyzeForm from './components/AnalyzeForm';
 import Dashboard from './pages/Dashboard';
 import Layout from './pages/Layout';
 import Login from './components/Login';
+import Profile from './pages/Profile';
 
 interface Analysis {
 	id: number;
@@ -169,6 +170,7 @@ function App() {
 				<Route path='/' index element={<Home />} />
 				<Route path='/dashboard' element={<Dashboard />} />
 				<Route path='/login' element={<Login />} />
+				<Route path='/profile' element={<Profile />} />
 				<Route path='/analyses/:analysisId' element={<Detail />} />
 			</Routes>
 		</Layout>

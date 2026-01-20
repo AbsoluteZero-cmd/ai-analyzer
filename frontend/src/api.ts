@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://backend:8000';
 
 const getAnalyses = async () => {
 	try {
@@ -54,9 +54,39 @@ const login = async (username: string, password: string) => {
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body: new URLSearchParams({ username, password }),
 	});
+
 	console.log('1');
 	if (!res.ok) throw new Error('Login failed');
-	return res;
+	return await res.json();
 };
 
-export { getAnalyses, postAnalysis, getAnalysesDetail, deleteAnalysis, login };
+const me = async () => {
+	const res = await fetch(`${API_URL}/users/me`, {
+		credentials: 'include',
+	});
+
+	console.log('1');
+	if (!res.ok) throw new Error('Login failed');
+	return await res.json();
+};
+
+const logout = async () => {
+	const res = await fetch(`${API_URL}/logout`, {
+		method: 'POST',
+		credentials: 'include',
+	});
+
+	console.log('logout');
+	if (!res.ok) throw new Error('Login failed');
+	return await res.json();
+};
+
+export {
+	getAnalyses,
+	postAnalysis,
+	getAnalysesDetail,
+	deleteAnalysis,
+	login,
+	me,
+	logout,
+};

@@ -59,13 +59,13 @@ def verify_token(token: str):
 
 async def get_token(request: Request) -> str:
     cookie_token = request.cookies.get("session_token")
-    if cookie_token:
-        return cookie_token
-    return await oauth2_scheme(request)
+    if not cookie_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return cookie_token
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    token: str = Depends(get_token),
     db: Session = Depends(get_db),
 ) -> User:
     payload = verify_token(token)

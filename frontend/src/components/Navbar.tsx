@@ -20,6 +20,9 @@ const Navbar = () => {
 				<p className='mr-3 text-sm'>
 					<Link to='/login'>Login</Link>
 				</p>
+				<p className='mr-3 text-sm'>
+					<Link to='/profile'>Profile</Link>
+				</p>
 				<button className='rounded-2xl bg-yellow-500 font-medium text-white text-sm py-1 px-4 hover:bg-amber-400 transition-colors'>
 					<Link to='/dashboard'>Dashboard</Link>
 				</button>

@@ -1,8 +1,9 @@
 import os
 from .auth import create_access_token, get_current_user
-from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
+from fastapi import FastAPI, UploadFile, File, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import status
+from datetime import timedelta
 
 from sqlalchemy.orm import Session
 from .db import Base, engine, get_db
@@ -27,6 +28,7 @@ Base.metadata.create_all(bind=engine)
 summarizer: Summarizer | None = None
 
 MAX_CHARS = int(os.getenv("MAX_CHARS", "25000"))
+
 
 @app.on_event("startup")
 def load_model():
@@ -97,12 +99,13 @@ def get_analysis(analysis_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Not found")
     return row
 
+
 @app.delete("/api/delete/{analysis_id}")
 def delete_analysis(analysis_id: int, db: Session = Depends(get_db)):
     print(analysis_id)
     row = db.query(Analysis).filter(Analysis.id == analysis_id).delete()
     db.commit()
-    return {'status': 'ok'}
+    return {"status": "ok"}
 
 
 # Users
@@ -111,18 +114,39 @@ from .schemas import Token
 from .models import User
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+
 @app.post("/token", response_model=Token)
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login_for_access_token(
+    response: Response,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
     user = authenticate_user(db, form_data.username, form_data.password)
-    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": user.username})
+
+    access_token = create_access_token({"sub": user.username})
+
+    response.set_cookie(
+        key="session_token",  # важно: совпадает с get_token()
+        value=access_token,
+        httponly=True,
+        secure=False,  # True в проде
+        samesite="lax",  # "none" если реально кросс-домен
+        path="/",  # важно: чтобы отправлялось на /users/me и /api/*
+        max_age=60 * 30,  # 30 минут
+    )
+
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.post("/logout")
+def logout(response: Response):
+    response.delete_cookie("session_token", path="/")
+    return {"ok": True}
 
 
 @app.post("/register")
@@ -137,20 +161,23 @@ def create_user(user: UserIn, db: Session = Depends(get_db)):
         )
 
     hashed_password = get_password_hash(user.hashed_password)
-    new_user = User(username=user.username,email=user.email,hashed_password=hashed_password)
+    new_user = User(
+        username=user.username, email=user.email, hashed_password=hashed_password
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
     return {"message": "User created successfully", "user_id": new_user.id}
 
+
 @app.get("/users/me", response_model=UserOut)
 def read_users_me(current_user: User = Depends(get_current_user)):
+    print(f"-------------\n{current_user.username}")
     return current_user
+
 
 @app.get("/users/all", response_model=list[UserOut])
 def get_users(db: Session = Depends(get_db)):
     rows = db.query(User).order_by(User.id.desc()).limit(50).all()
     return rows
-
-
