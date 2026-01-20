@@ -17,7 +17,7 @@ export default function Login() {
 	}
 
 	return (
-		<div className='rounded-xl border border-gray-200 py-8 px-6 max-w-90 w-full'>
+		<div className='rounded-xl border border-gray-200 py-8 px-6 max-w-90 w-full mx-auto mt-10'>
 			<div className='mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100'>
 				<svg
 					className='h-8 w-8 text-blue-500'
