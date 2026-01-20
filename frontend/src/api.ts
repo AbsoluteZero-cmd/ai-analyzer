@@ -40,15 +40,20 @@ const getAnalysesDetail = async (id: number) => {
 };
 
 const deleteAnalysis = async (id: number) => {
-	try {
-		const res = await fetch(`${API_URL}/api/delete/${id}`, {
-			method: 'DELETE',
-		});
-		console.log(res);
-		return await res.json();
-	} catch (error) {
-		console.log(error);
-	}
+	const res = await fetchProtected(`/api/delete/${id}`, {
+		method: 'DELETE',
+	});
+	console.log(res);
+
+	// try {
+	// 	const res = await fetch(`${API_URL}/api/delete/${id}`, {
+	// 		method: 'DELETE',
+	// 	});
+	// 	console.log(res);
+	// 	return await res.json();
+	// } catch (error) {
+	// 	console.log(error);
+	// }
 };
 
 const postAnalysis = async (formData: FormData) => {

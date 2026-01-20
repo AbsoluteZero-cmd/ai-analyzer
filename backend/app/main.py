@@ -12,6 +12,11 @@ from .schemas import AnalysisOut, AnalysisDetailOut, TokenData, UserIn, UserOut
 from .ai import Summarizer
 from .models import Analysis
 
+from .schemas import Token
+from .models import User
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+
 app = FastAPI(title="ai-analyzer")
 
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
@@ -101,7 +106,11 @@ def get_analysis(analysis_id: int, db: Session = Depends(get_db)):
 
 
 @app.delete("/api/delete/{analysis_id}")
-def delete_analysis(analysis_id: int, db: Session = Depends(get_db)):
+def delete_analysis(
+    analysis_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     print(analysis_id)
     row = db.query(Analysis).filter(Analysis.id == analysis_id).delete()
     db.commit()
@@ -109,10 +118,6 @@ def delete_analysis(analysis_id: int, db: Session = Depends(get_db)):
 
 
 # Users
-
-from .schemas import Token
-from .models import User
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 
 @app.post("/token", response_model=Token)
