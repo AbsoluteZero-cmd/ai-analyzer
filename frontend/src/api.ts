@@ -1,5 +1,26 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://backend:8000';
 
+const fetchApi = async (path: string, options: RequestInit = {}) => {
+	return fetch(`${API_URL}${path}`, {
+		...options,
+		credentials: 'include',
+	});
+};
+
+const fetchProtected = async (path: string, options: RequestInit = {}) => {
+	try {
+		const res: Response = await fetchApi(path, options);
+		if (res.status === 401 || res.status === 403) {
+			window.location.href = '/login';
+			return;
+		}
+
+		return await res.json();
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const getAnalyses = async () => {
 	try {
 		const res = await fetch(`${API_URL}/api/analyses`);
@@ -55,19 +76,15 @@ const login = async (username: string, password: string) => {
 		body: new URLSearchParams({ username, password }),
 	});
 
-	console.log('1');
 	if (!res.ok) throw new Error('Login failed');
+	window.location.href = '/dashboard';
 	return await res.json();
 };
 
 const me = async () => {
-	const res = await fetch(`${API_URL}/users/me`, {
-		credentials: 'include',
-	});
-
-	console.log('1');
-	if (!res.ok) throw new Error('Login failed');
-	return await res.json();
+	const res = await fetchProtected('/users/me');
+	console.log(res);
+	return res;
 };
 
 const logout = async () => {
