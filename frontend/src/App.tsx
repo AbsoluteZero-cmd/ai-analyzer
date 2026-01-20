@@ -4,6 +4,7 @@ import { postAnalysis, getAnalysesDetail, deleteAnalysis } from './api';
 import AnalyzeForm from './components/AnalyzeForm';
 import Dashboard from './pages/Dashboard';
 import Layout from './pages/Layout';
+import Login from './components/Login';
 
 interface Analysis {
 	id: number;
@@ -48,7 +49,7 @@ function blobToFile(theBlob, fileName) {
 		{
 			type: theBlob.type, // MIME type from the original blob
 			lastModified: Date.now(), // Current timestamp as last modified date
-		}
+		},
 	);
 }
 
@@ -167,6 +168,7 @@ function App() {
 			<Routes>
 				<Route path='/' index element={<Home />} />
 				<Route path='/dashboard' element={<Dashboard />} />
+				<Route path='/login' element={<Login />} />
 				<Route path='/analyses/:analysisId' element={<Detail />} />
 			</Routes>
 		</Layout>

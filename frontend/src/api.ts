@@ -47,4 +47,16 @@ const postAnalysis = async (formData: FormData) => {
 	}
 };
 
-export { getAnalyses, postAnalysis, getAnalysesDetail, deleteAnalysis };
+const login = async (username: string, password: string) => {
+	const res = await fetch(`${API_URL}/token`, {
+		method: 'POST',
+		credentials: 'include',
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		body: new URLSearchParams({ username, password }),
+	});
+	console.log('1');
+	if (!res.ok) throw new Error('Login failed');
+	return res;
+};
+
+export { getAnalyses, postAnalysis, getAnalysesDetail, deleteAnalysis, login };
